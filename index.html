@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash Finder</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f4f0; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .box { background: #fff; width: 100%; max-width: 350px; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        .map { width: 100%; height: 250px; background: #dcedc8; border-radius: 8px; position: relative; margin: 15px 0; border: 1px solid #999; }
+        .me { width: 12px; height: 12px; background: #1976d2; border-radius: 50%; position: absolute; top: 50%; left: 40%; border: 2px solid #fff; }
+        .bin { position: absolute; font-size: 20px; cursor: pointer; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
+        .fnd { background: #388e3c; color: #fff; }
+        #msg { font-size: 13px; color: #2e7d32; min-height: 18px; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h3>Proper Trash Disposal</h3>
+        <div class="map">
+            <div class="me"></div>
+            <div class="bin" style="top:15%; left:75%;" onclick="inf('Gate A')">🗑️</div>
+            <div class="bin" style="top:45%; left:15%;" onclick="inf('Main Hall')">🗑️</div>
+            <div class="bin" style="top:70%; left:55%;" onclick="inf('Corner')">🗑️</div>
+        </div>
+
+        <button class="btn fnd" onclick="go()">Find Nearest Bin</button>
+        <div id="msg"></div>
+    </div>
+
+    <script>
+        let s = document.getElementById('msg');
+
+        function inf(l) {
+            alert("Location: " + l);
+        }
+
+        function go() {
+            s.innerText = "Locating...";
+            
+            if ("Notification" in window) {
+                Notification.requestPermission().then(p => {
+                    if (p === "granted") {
+                        setTimeout(() => {
+                            new Notification("Bin Nearby", {
+                                body: "Please use the bin at Main Hall to keep the area clean.",
+                                icon: "https://cdn-icons-png.flaticon.com/512/3299/3299935.png"
+                            });
+                        }, 2000);
+                    }
+                });
+            }
+            
+            setTimeout(() => {
+                s.innerText = "Nearest: Main Hall (20m)";
+            }, 1000);
+        }
+
+        if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(() => {
+            console.log("ayos! rehistro as service worker");
+          })
+          .catch((error) => {
+            console.log("Registration failed: ", error);
+          });
+      }
+    </script>
+</body>
+</html>
